@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator App</title>
+    <script src="/datadog-rum.js"></script>
+    <script>
+        import { datadogRum } from '@datadog/browser-rum';
+
+        datadogRum.init({
+            applicationId: 'APPLICATION_ID',
+            clientToken: 'CLIENT_TOKEN',
+            site: 'datadoghq.com',
+            service: 'calculator-app',
+            env: 'prd',
+            version: '1.0.0',
+            sampleRate: 100,
+            sessionReplaySampleRate: 20,
+            trackUserInteractions: true,
+            trackResources: true,
+            trackLongTasks: true,
+            defaultPrivacyLevel: 'mask-user-input',
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.addEventListener('click', () => {
+                const userId = Math.floor(Math.random() * 1000);
+                const roles = ['admin', 'standard'];
+                const plans = ['premium', 'standard'];
+                const role = roles[Math.floor(Math.random() * roles.length)];
+                const plan = plans[Math.floor(Math.random() * plans.length)];
+                console.log(`Logged in as User ID: ${userId}, Role: ${role}, Plan: ${plan}`);
+            });
+
+            const calculateBtn = document.getElementById('calculateBtn');
+            calculateBtn.addEventListener('click', async () => {
+                const num1 = document.getElementById('num1').value;
+                const num2 = document.getElementById('num2').value;
+                const operation = document.getElementById('operation').value;
+
+                console.log(`Calculating: ${num1} ${operation} ${num2}`);
+
+                try {
+                    const response = await fetch('http://YOUR_SERVER_ADDRESS/calculate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ num1: Number(num1), num2: Number(num2), operation })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Calculation result:', data);
+                    document.getElementById('result').innerText = `Result: ${data.result}`;
+                } catch (error) {
+                    console.error('Error occurred:', error);
+                    document.getElementById('result').innerText = `Error: ${error.message}`;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="login">
+        <button id="loginBtn">Login</button>
+    </div>
+    <div class="calculator">
+        <input type="number" id="num1" placeholder="Enter first number">
+        <input type="number" id="num2" placeholder="Enter second number">
+        <select id="operation">
+            <option value="add">+</option>
+            <option value="subtract">-</option>
+            <option value="multiply">*</option>
+            <option value="divide">/</option>
+        </select>
+        <button id="calculateBtn">Calculate</button>
+        <div class="result" id="result"></div>
+    </div>
+</body>
+</html>
