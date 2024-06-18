@@ -1,0 +1,16 @@
+import { datadogRum } from '@datadog/browser-rum';
+
+datadogRum.init({
+    applicationId: 'APPLICATION_ID',  // เปลี่ยนเป็น Application ID ของคุณ
+    clientToken: 'CLIENT_TOKEN',  // เปลี่ยนเป็น Client Token ของคุณ
+    site: 'datadoghq.com',
+    service: 'SERVICE_NAME',  // เปลี่ยนเป็นชื่อเซอร์วิสของคุณ
+    env: 'ENVIRONMENT',  // เปลี่ยนเป็นสภาพแวดล้อม เช่น 'prd', 'staging'
+    version: '1.0.0',  // เปลี่ยนเป็นเวอร์ชันของแอปพลิเคชัน
+    sampleRate: 100,
+    sessionReplaySampleRate: 20,
+    trackUserInteractions: true,
+    trackResources: true,
+    trackLongTasks: true,
+    defaultPrivacyLevel: 'mask-user-input',
+});
